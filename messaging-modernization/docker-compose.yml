@@ -9,14 +9,13 @@ services:
     container_name: control-center
     depends_on:
       - kafka-connect
-      - ksqldb-server
     ports:
       - "9021:9021"
     environment:
       CONTROL_CENTER_BOOTSTRAP_SERVERS: $BOOTSTRAP_SERVERS
       CONTROL_CENTER_CONNECT_CLUSTER: 'kafka-connect:8083'
-      CONTROL_CENTER_KSQL_KSQLDB1_URL: "http://ksqldb-server:8088"
-      CONTROL_CENTER_KSQL_KSQLDB1_ADVERTISED_URL: "http://localhost:8088"
+        #CONTROL_CENTER_KSQL_KSQLDB1_URL: "http://ksqldb-server:8088"
+        #CONTROL_CENTER_KSQL_KSQLDB1_ADVERTISED_URL: "http://localhost:8088"
       CONTROL_CENTER_SCHEMA_REGISTRY_URL: $SCHEMA_REGISTRY_URL
       CONTROL_CENTER_SCHEMA_REGISTRY_BASIC_AUTH_CREDENTIALS_SOURCE: $BASIC_AUTH_CREDENTIALS_SOURCE
       CONTROL_CENTER_SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO: $SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO
@@ -29,38 +28,6 @@ services:
       CONFLUENT_METRICS_TOPIC_REPLICATION: 3
       PORT: 9021
   
-  ksqldb-server:
-    image: confluentinc/cp-ksqldb-server:6.0.1
-    hostname: ksqldb-server
-    container_name: ksqldb-server
-    depends_on:
-      - kafka-connect
-    ports:
-      - "8088:8088"
-    environment:
-      KSQL_LISTENERS: "http://0.0.0.0:8088"
-      KSQL_BOOTSTRAP_SERVERS: $BOOTSTRAP_SERVERS
-      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
-      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
-      KSQL_KSQL_CONNECT_URL: "http://kafka-connect:8083"
-      KSQL_KSQL_SCHEMA_REGISTRY_URL: $SCHEMA_REGISTRY_URL
-      KSQL_KSQL_SCHEMA_REGISTRY_BASIC_AUTH_CREDENTIALS_SOURCE: $BASIC_AUTH_CREDENTIALS_SOURCE
-      KSQL_KSQL_SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO: $SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO
-      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: 1
-      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: 'true'
-      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: 'true'
-      KSQL_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
-      KSQL_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
-
-  ksqldb-cli:
-    image: confluentinc/cp-ksqldb-cli:6.0.1
-    container_name: ksqldb-cli
-    hostname: ksqldb-cli
-    depends_on:
-      - ksqldb-server
-    entrypoint: /bin/sh
-    tty: true
-      
   kafka-connect:
     image: confluentinc/cp-kafka-connect:6.0.1
     container_name: kafka-connect

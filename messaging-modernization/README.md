@@ -24,19 +24,16 @@ In the presented example, we integrate messaging systems with Confluent.
 We show the ingestion of data from ActiveMQ, IBM MQ, RabbitMQ, or Tibco
 EMS via Kafka Connect and Confluent Schema registry. We illustrate
 stream processing, using ksqlDB to merge, enrich and join data sets from
-different messaging systems. Lastly, we show using Kafka Connect to
+different messaging systems. Lastly, we show using Kafka Connect how to
 relay the resulting event streams to a modern data store such as an
 ElasticSearch Index, an RDBMS, a NoSQL Database, or Confluent Cloud.
 
 Reference Example
 -----------------
 
-To demonstrate the integration, we work with a reference set of docker
-images tied together with docker-compose. The images included are:
+To demonstrate the integration, we work with Confluent Cloud in concert with a reference set of docker images tied together with docker-compose. The images included are:
 
--   **Confluent Platform**, including Apache Kafka, Kafka Connect,
-    ksqlDB, Confluent Schema Registry, Confluent Control Center and
-    Zookeeper.
+-   **Confluent Platform**, including Kafka Connect, ksqlDB, and Confluent Control Center.
 
 -   **Messaging Systems** of your choice. The example includes ActiveMQ,
     IBM MQ, Tibco EMS, and RabbitMQ. You can choose a subset or add your
@@ -47,7 +44,7 @@ images tied together with docker-compose. The images included are:
     and Elasticsearch as a search index. You can choose a subset or add
     your own, such as HDFS, AWS S3, or others.
 
-![image](media/media/image1.png)
+![image](media/media/arch.png)
 
 *Streaming event data from a variety of messaging systems to modern data
 stores via Confluent Platform*
@@ -122,24 +119,23 @@ their initialization. By default the following systems are enabled:
 </tbody>
 </table>
 
-Obtain and properly place the dependent jars. Run docker-compose up -d
-to start the images. Run docker-compose ps to monitor startup. If
-docker-compose ps does not show the broker image after startup, run
-docker-compose down and restart.
+Obtain and properly place the dependent jars. Run docker-compose up -d to start the images. Run docker-compose ps to monitor startup. If docker-compose ps does not show the expected images after startup, run docker-compose down and restart.
 
 Dependent Jars and Docker Images
 --------------------------------
 
-The IBM MQ and Tibco connectors require additional jars in order to
+The demonstration relies on external docker images for IBM MQ, Rabbit,
+ActiveMQ and Tibco. Although they’re all referenced in docker-compose.yml,
+the Tibco image needs to be built before running the installation, while the IBM MQ and Tibco connectors both require additional jars in order to
 function.
 
 ### Tibco
 
 Download the TIBCO EMS Community Edition at: [TIBCO Enterprise Message
 Service™ - Community Edition – Free Download -
-Linux](https://www.tibco.com/resources/product-download/tibco-enterprise-message-service-community-edition—free-download),
-and place the file `TIB_ems-ce_8.5.1_linux_x86_64.zip` into the
-directory `scripts/tibco/docker-tibco`
+Linux](https://www.tibco.com/resources/product-download/tibco-enterprise-message-service-community-edition-free-download-0),
+and place the file `TIB_ems-ce_8.6.0_linux_x86_64.zip` into the
+directory `scripts/tibco/docker-tibco` (depending on the time of reading, the version may have changed, and you will need to update the build script)
 
 Run `scripts/tibco/build-tibco.sh` to build the docker image.
 
@@ -151,7 +147,7 @@ the `jars` directory so it’s added to the kafka-connect image later.
 
 Download the IBM MQ JMS and Java 'All Client’ following the
 documentation at:
-<https://docs.confluent.io/kafka-connect-ibmmq-sink/current/#ibmmq-client-jar>.
+<https://docs.confluent.io/kafka-connect-ibmmq-sink/current/overview.html#ibmmq-client-jar>.
 Place the jars com.ibm.mq.allclient.jar and jms.jar in the jars
 directory so they’re added to the kafka-connect image later.
 
@@ -162,10 +158,7 @@ Your jars directory should look contain:
      com.ibm.mq.allclient.jar
      tibjms.jar
 
-The demonstration relies on external docker images for IBM MQ, Rabbit,
-ActiveMQ and Tibco. Although they’re referenced in docker-compose.yml,
-the Tibco image needs to be built before running the installation. Run
-`scripts/tibco/build-tibco.sh` to build that image.
+
 
 Confluent
 ---------
@@ -745,9 +738,6 @@ Confluent docker image reference:
 
 Confluent Demo Scene: <https://github.com/confluentinc/demo-scene>
 
-Confluent Platform demo on CP-Demo:
-<https://docs.confluent.io/platform/current/tutorials/cp-demo/docs/index.html>
-
 Reference for Confluent and Elastic:
 <https://www.confluent.io/blog/using-kafka-ksqldb-kibana-to-stream-data-and-get-real-time-analytics/>
 
@@ -755,9 +745,6 @@ Reference for Confluent and Elastic:
 
 Kafka Docker playground:
 <https://github.com/vdesabou/kafka-docker-playground>
-
-Confluent Platform Reference Architecture:
-<https://www.confluent.io/resources/apache-kafka-confluent-enterprise-reference-architecture/>
 
 Confluent Documentation: <https://docs.confluent.io/home/overview.html>
 
